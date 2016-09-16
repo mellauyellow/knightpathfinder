@@ -1,6 +1,8 @@
 require_relative '00_tree_node'
 
 class KnightPathFinder
+  attr_reader :node
+
   def self.valid_moves(pos)
     x, y = pos
     delta_coords = KnightPathFinder.generate_coords
@@ -26,18 +28,35 @@ class KnightPathFinder
 		    coords << [array[idx1], array[idx2]] unless array[idx2].abs == array[idx1].abs
 	    end
     end
-  end
-
-coords
+    coords
   end
 
   def initialize(pos)
-    @position = pos
+    @node = PolyTreeNode.new(pos)
     @board = Array.new(8) {Array.new(8)}
     @visited_positions = [pos]
+    @move_tree = build_move_tree(@node)
   end
 
   def new_move_positions(pos)
+    possible_moves = KnightPathFinder.valid_moves(pos).select do |move|
+      !@visited_positions.include?(move)
+    end
+
+    @visited_positions += possible_moves
+
+    possible_moves
+  end
+
+  def build_move_tree(node)
+    possible_moves = new_move_positions(node.value)
+
+    possible_moves.each do |move|
+      new_node = PolyTreeNode.new(move)
+      new_node.parent = node
+      build_move_tree(new_node)
+    end
+
   end
 
   def [](pos)

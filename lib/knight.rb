@@ -35,28 +35,55 @@ class KnightPathFinder
     @node = PolyTreeNode.new(pos)
     @board = Array.new(8) {Array.new(8)}
     @visited_positions = [pos]
-    @move_tree = build_move_tree(@node)
+    build_move_tree(@node)
   end
 
   def new_move_positions(pos)
     possible_moves = KnightPathFinder.valid_moves(pos).select do |move|
       !@visited_positions.include?(move)
     end
-
     @visited_positions += possible_moves
-
     possible_moves
   end
 
   def build_move_tree(node)
-    possible_moves = new_move_positions(node.value)
+    possible_moves = [node]
 
-    possible_moves.each do |move|
-      new_node = PolyTreeNode.new(move)
-      new_node.parent = node
-      build_move_tree(new_node)
+    until possible_moves.empty?
+      current_node = possible_moves.shift
+      next_moves = new_move_positions(current_node.value)
+
+      next_moves.each do |move|
+        new_node = PolyTreeNode.new(move)
+        new_node.parent = current_node
+        possible_moves << new_node
+      end
+    end
+    #
+    # possible_moves = new_move_positions(node.value)
+    # possible_moves.each do |move|
+    #   new_node = PolyTreeNode.new(move)
+    #   new_node.parent = node
+    #   build_move_tree(new_node)
+    # end
+
+  end
+
+  def find_path(end_pos)
+    target_node = @node.bfs(end_pos)
+
+    trace_path_back(target_node)
+  end
+
+  def trace_path_back(node)
+    path = [node.value]
+
+    until node == @node
+      path.unshift(node.parent.value)
+      node = node.parent
     end
 
+    path
   end
 
   def [](pos)

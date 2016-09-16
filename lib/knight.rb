@@ -47,6 +47,23 @@ class KnightPathFinder
   end
 
   def build_move_tree(node)
+    # possible_moves = [node]
+    #
+    # until possible_moves.empty?
+    #   current_node = possible_moves.shift
+    #   next_moves = KnightPathFinder.valid_moves(current_node.value).select do |move|
+    #     !@visited_positions.include?(move)
+    #   end
+    #
+    #   next_moves.each do |move|
+    #     new_node = PolyTreeNode.new(move)
+    #     new_node.parent = current_node
+    #     possible_moves << new_node
+    #   end
+    #
+    #   new_move_positions(current_node.value)
+    #
+    # end
     possible_moves = [node]
 
     until possible_moves.empty?
@@ -59,13 +76,6 @@ class KnightPathFinder
         possible_moves << new_node
       end
     end
-    #
-    # possible_moves = new_move_positions(node.value)
-    # possible_moves.each do |move|
-    #   new_node = PolyTreeNode.new(move)
-    #   new_node.parent = node
-    #   build_move_tree(new_node)
-    # end
 
   end
 
